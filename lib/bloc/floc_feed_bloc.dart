@@ -1,19 +1,19 @@
 import 'dart:async';
-import 'package:bask_flock_proximity_app/flock_event.dart';
-import 'package:bask_flock_proximity_app/flock_state.dart';
-import 'package:bask_flock_proximity_app/location_service.dart';
-import 'package:bask_flock_proximity_app/member.dart';
+import 'package:bask_flock_proximity_app/bloc/flock_feed_event.dart';
+import 'package:bask_flock_proximity_app/bloc/flock_feed_state.dart';
+import 'package:bask_flock_proximity_app/services/location_service.dart';
+import 'package:bask_flock_proximity_app/models/member.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
-
 class FlockBloc extends Bloc<FlockEvent, FlockState> {
   final LocationService locationService = LocationService();
   StreamSubscription? _locationSub;
   MemberType? _currentFilter;
+  double? _lastLat;
+  double? _lastLng;
 
-  /// Sample member data with detailed information
   List<Member> members = [
-    // DOCTORS
+
     Member(
       id: "doc_001",
       name: "Dr. John Smith",
@@ -218,48 +218,83 @@ class FlockBloc extends Bloc<FlockEvent, FlockState> {
     }
   }
 
-  /// Update when location changes
+ 
   void _onLocationUpdated(
       LocationUpdated event, Emitter<FlockState> emit) {
-    List<Map<String, dynamic>> result = members
-        .where((m) => _currentFilter == null || m.type == _currentFilter)
-        .map((m) {
-      // Calculate distance
-      double distanceInMeters = Geolocator.distanceBetween(
-        event.lat,
-        event.lng,
-        m.lat,
-        m.lng,
-      );
-      double distanceInKm = distanceInMeters / 1000;
+    // Store the latest location
+    _lastLat = event.lat;
+    _lastLng = event.lng;
 
-      return {
-        "member": m,
-        "distance": distanceInKm.toStringAsFixed(2),
-        "distanceValue": distanceInKm,
-      };
+    // Get filtered members
+    List<Member> filteredMembers = members.where((m) {
+      return _currentFilter == null || m.type == _currentFilter;
     }).toList();
 
-    // Sort by distance
+ 
+    List<Map<String, dynamic>> result = filteredMembers
+        .map((m) {
+         
+          double distanceInMeters = Geolocator.distanceBetween(
+            event.lat,
+            event.lng,
+            m.lat,
+            m.lng,
+          );
+          double distanceInKm = distanceInMeters / 1000;
+
+          return {
+            "member": m,
+            "distance": distanceInKm.toStringAsFixed(2),
+            "distanceValue": distanceInKm,
+          };
+        })
+        .toList();
+
+    // Sort by distance (nearest first)
     result.sort((a, b) => (a['distanceValue'] as double)
         .compareTo(b['distanceValue'] as double));
 
     emit(FlockLoaded(result, filterType: _currentFilter));
   }
 
-  /// Filter members by type (doctor, patient, or all)
   Future<void> _onFilterByType(
       FilterByType event, Emitter<FlockState> emit) async {
+
     _currentFilter = event.type;
 
-    final currentState = state;
-    if (currentState is FlockLoaded) {
-      // Re-emit with same data but filtered
-      List<Map<String, dynamic>> filtered = currentState.membersWithDistance
-          .where((item) => event.type == null || item["member"].type == event.type)
+      if (_lastLat != null && _lastLng != null) {
+      
+      List<Member> filteredMembers = members.where((m) {
+        return event.type == null || m.type == event.type;
+      }).toList();
+
+    
+      List<Map<String, dynamic>> result = filteredMembers
+          .map((m) {
+            double distanceInMeters = Geolocator.distanceBetween(
+              _lastLat!,
+              _lastLng!,
+              m.lat,
+              m.lng,
+            );
+            double distanceInKm = distanceInMeters / 1000;
+
+            return {
+              "member": m,
+              "distance": distanceInKm.toStringAsFixed(2),
+              "distanceValue": distanceInKm,
+            };
+          })
           .toList();
 
-      emit(FlockLoaded(filtered, filterType: event.type));
+      // Sort by distance
+      result.sort((a, b) => (a['distanceValue'] as double)
+          .compareTo(b['distanceValue'] as double));
+
+      emit(FlockLoaded(result, filterType: event.type));
+    } else {
+      // If no location data yet, just show loading
+      emit(FlockLoading());
     }
   }
 

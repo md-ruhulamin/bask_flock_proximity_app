@@ -1,4 +1,4 @@
-import 'package:bask_flock_proximity_app/member.dart';
+import 'package:bask_flock_proximity_app/models/member.dart';
 
 abstract class FlockEvent {}
 
@@ -12,7 +12,7 @@ class LocationUpdated extends FlockEvent {
 }
 
 class FilterByType extends FlockEvent {
-  final MemberType? type; // null = show all
+  final MemberType? type; 
 
   FilterByType(this.type);
 }

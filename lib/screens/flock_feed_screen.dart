@@ -1,9 +1,10 @@
 
-import 'package:bask_flock_proximity_app/flock_bloc.dart';
-import 'package:bask_flock_proximity_app/flock_event.dart';
-import 'package:bask_flock_proximity_app/flock_state.dart';
-import 'package:bask_flock_proximity_app/member.dart';
-import 'package:bask_flock_proximity_app/member_profile_screen.dart';
+import 'package:bask_flock_proximity_app/bloc/floc_feed_bloc.dart';
+import 'package:bask_flock_proximity_app/bloc/flock_feed_event.dart';
+import 'package:bask_flock_proximity_app/bloc/flock_feed_state.dart';
+import 'package:bask_flock_proximity_app/models/member.dart';
+import 'package:bask_flock_proximity_app/screens/member_profile_screen.dart';
+import 'package:bask_flock_proximity_app/screens/doctors_profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 class FlockFeedScreen extends StatefulWidget {
@@ -20,99 +21,101 @@ class _FlockFeedScreenState extends State<FlockFeedScreen> {
   Widget build(BuildContext context) {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
-    return Scaffold(
-      backgroundColor: isDarkMode ? const Color(0xFF121212) : const Color(0xFFF8F9FA),
-      appBar: _buildAppBar(isDarkMode),
-      body: Column(
-        children: [
-         
-          _buildFilterPills(context),
-      
-          Expanded(
-            child: BlocBuilder<FlockBloc, FlockState>(
-              builder: (context, state) {
-             
-                if (state is FlockLoading) {
-                  return Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                            Theme.of(context).primaryColor,
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        Text(
-                          "Loading community members...",
-                          style: Theme.of(context).textTheme.bodyMedium,
-                        ),
-                      ],
-                    ),
-                  );
-                }
-
-                // Error State
-                if (state is FlockError) {
-                  return Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(24.0),
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: isDarkMode ? const Color(0xFF121212) : const Color(0xFFF8F9FA),
+        appBar: _buildAppBar(isDarkMode),
+        body: Column(
+          children: [
+           
+            _buildFilterPills(context),
+        
+            Expanded(
+              child: BlocBuilder<FlockBloc, FlockState>(
+                builder: (context, state) {
+               
+                  if (state is FlockLoading) {
+                    return Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(
-                            Icons.error_outline,
-                            size: 64,
-                            color: Theme.of(context).colorScheme.error,
+                          CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              Theme.of(context).primaryColor,
+                            ),
                           ),
                           const SizedBox(height: 16),
                           Text(
-                            "Oops! Something went wrong",
-                            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                            textAlign: TextAlign.center,
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            state.message,
-                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                  color: Colors.grey,
-                                ),
-                            textAlign: TextAlign.center,
+                            "Loading community members...",
+                            style: Theme.of(context).textTheme.bodyMedium,
                           ),
                         ],
                       ),
-                    ),
-                  );
-                }
-
-                // Loaded State
-                if (state is FlockLoaded) {
-                  return state.membersWithDistance.isEmpty
-                      ? _buildEmptyState(context)
-                      : ListView.builder(
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                          itemCount: state.membersWithDistance.length,
-                          itemBuilder: (context, index) {
-                            var data = state.membersWithDistance[index];
-                            Member member = data["member"];
-                            double distance = double.parse(data["distance"].toString());
-
-                            return _buildMemberCard(
-                              context,
-                              member,
-                              distance,
-                            );
-                          },
-                        );
-                }
-
-                return const SizedBox();
-              },
+                    );
+                  }
+      
+                  // Error State
+                  if (state is FlockError) {
+                    return Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(24.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.error_outline,
+                              size: 64,
+                              color: Theme.of(context).colorScheme.error,
+                            ),
+                            const SizedBox(height: 16),
+                            Text(
+                              "Oops! Something went wrong",
+                              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              state.message,
+                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                    color: Colors.grey,
+                                  ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  }
+      
+                  // Loaded State
+                  if (state is FlockLoaded) {
+                    return state.membersWithDistance.isEmpty
+                        ? _buildEmptyState(context)
+                        : ListView.builder(
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                            itemCount: state.membersWithDistance.length,
+                            itemBuilder: (context, index) {
+                              var data = state.membersWithDistance[index];
+                              Member member = data["member"];
+                              double distance = double.parse(data["distance"].toString());
+      
+                              return _buildMemberCard(
+                                context,
+                                member,
+                                distance,
+                              );
+                            },
+                          );
+                  }
+      
+                  return const SizedBox();
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -279,10 +282,19 @@ class _FlockFeedScreenState extends State<FlockFeedScreen> {
         child: Material(
           child: InkWell(
             onTap: () {
+              if(!isDoctor){
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => PatientProfileScreen(),
+                  ),
+                );
+                return;
+              }
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (_) => PatientProfileScreen(),
+                  builder: (_) => ProviderNoteScreen(),
                 ),
               );
             },

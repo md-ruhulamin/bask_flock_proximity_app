@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-
 class MedicalDashboard extends StatelessWidget {
   const MedicalDashboard({super.key});
 
@@ -8,7 +7,6 @@ class MedicalDashboard extends StatelessWidget {
   Widget build(BuildContext context) {
     const bgColor = Color(0xFF0D1117);
     const surfaceColor = Color(0xFF161B22);
-    const cardColor = Color(0xFF21262D);
 
     return Scaffold(
       backgroundColor: bgColor,
@@ -19,28 +17,37 @@ class MedicalDashboard extends StatelessWidget {
           children: [
             const Text(
               "Medical History",
-              style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+              ),
             ),
             const SizedBox(height: 20),
-            
-          
-            // --- Current Medications Panel ---
+
             _buildSectionContainer(
               surfaceColor,
               icon: Icons.medication_outlined,
               title: "Current Medications",
               child: Column(
                 children: [
-                  _buildMedicationTile("Lisinopril", "10mg • 30 days", "2024-11-20"),
+                  _buildMedicationTile(
+                    "Lisinopril",
+                    "10mg • 30 days",
+                    "2024-11-20",
+                  ),
                   const SizedBox(height: 10),
-                  _buildMedicationTile("Atorvastatin", "20mg • 30 days", "2024-11-20"),
+                  _buildMedicationTile(
+                    "Atorvastatin",
+                    "20mg • 30 days",
+                    "2024-11-20",
+                  ),
                 ],
               ),
             ),
 
             const SizedBox(height: 20),
 
-            // --- Recent Alerts Panel ---
             _buildSectionContainer(
               surfaceColor,
               icon: Icons.error_outline,
@@ -57,11 +64,23 @@ class MedicalDashboard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: const [
-                    Text("Critical BP Reading", style: TextStyle(color: Colors.redAccent, fontWeight: FontWeight.bold)),
+                    Text(
+                      "Critical BP Reading",
+                      style: TextStyle(
+                        color: Colors.redAccent,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                     SizedBox(height: 4),
-                    Text("Blood pressure reached 165/95 mmHg", style: TextStyle(color: Colors.grey)),
+                    Text(
+                      "Blood pressure reached 165/95 mmHg",
+                      style: TextStyle(color: Colors.grey),
+                    ),
                     SizedBox(height: 8),
-                    Text("Today at 14:30", style: TextStyle(color: Colors.blueGrey, fontSize: 12)),
+                    Text(
+                      "Today at 14:30",
+                      style: TextStyle(color: Colors.blueGrey, fontSize: 12),
+                    ),
                   ],
                 ),
               ),
@@ -72,19 +91,29 @@ class MedicalDashboard extends StatelessWidget {
     );
   }
 
- 
-  
-  Widget _buildSectionContainer(Color color, {required IconData icon, Color iconColor = Colors.blue, required String title, required Widget child}) {
+  Widget _buildSectionContainer(
+    Color color, {
+    required IconData icon,
+    Color iconColor = Colors.blue,
+    required String title,
+    required Widget child,
+  }) {
     return Container(
       padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(24)),
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(24),
+      ),
       child: Column(
         children: [
           Row(
             children: [
               Icon(icon, color: iconColor, size: 20),
               const SizedBox(width: 10),
-              Text(title, style: const TextStyle(color: Colors.white, fontSize: 18)),
+              Text(
+                title,
+                style: const TextStyle(color: Colors.white, fontSize: 18),
+              ),
             ],
           ),
           const SizedBox(height: 20),
@@ -97,28 +126,32 @@ class MedicalDashboard extends StatelessWidget {
   Widget _buildMedicationTile(String name, String dose, String date) {
     return Container(
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(color: const Color(0xFF21262D).withOpacity(0.5), borderRadius: BorderRadius.circular(12)),
+      decoration: BoxDecoration(
+        color: const Color(0xFF21262D).withOpacity(0.5),
+        borderRadius: BorderRadius.circular(12),
+      ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(name, style: const TextStyle(color: Colors.white, fontSize: 16)),
-              Text(dose, style: const TextStyle(color: Colors.grey, fontSize: 14)),
+              Text(
+                name,
+                style: const TextStyle(color: Colors.white, fontSize: 16),
+              ),
+              Text(
+                dose,
+                style: const TextStyle(color: Colors.grey, fontSize: 14),
+              ),
             ],
           ),
-          Text(date, style: const TextStyle(color: Colors.blueGrey, fontSize: 12)),
+          Text(
+            date,
+            style: const TextStyle(color: Colors.blueGrey, fontSize: 12),
+          ),
         ],
       ),
-    );
-  }
-
-  Widget _buildWarningBadge() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-      decoration: BoxDecoration(color: Colors.orange.withOpacity(0.1), borderRadius: BorderRadius.circular(20)),
-      child: const Text("WARNING", style: TextStyle(color: Colors.orange, fontSize: 12, fontWeight: FontWeight.bold)),
     );
   }
 }

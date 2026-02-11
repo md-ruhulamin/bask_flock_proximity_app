@@ -1,5 +1,5 @@
 
-import 'package:bask_flock_proximity_app/member.dart';
+import 'package:bask_flock_proximity_app/models/member.dart';
 
 abstract class FlockState {}
 

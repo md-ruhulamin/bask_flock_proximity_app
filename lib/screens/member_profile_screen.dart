@@ -1,6 +1,6 @@
-import 'package:bask_flock_proximity_app/medical_history.dart';
-import 'package:bask_flock_proximity_app/prescribe.dart';
-import 'package:flutter/material.dart';
+import 'package:bask_flock_proximity_app/screens/widget/medical_history.dart';
+import 'package:bask_flock_proximity_app/screens/widget/prescribe.dart';
+import 'package:bask_flock_proximity_app/theme/medical_theme.dart';
 import 'package:flutter/material.dart';
 
 class PatientProfileScreen extends StatefulWidget {
@@ -35,40 +35,41 @@ class _PatientProfileScreenState extends State<PatientProfileScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFF0B0F1A),
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: const BackButton(color: Colors.white),
-        title: const Text("Back", style: TextStyle(color: Colors.white)),
-      ),
-      body: Column(
-        children: [
-          _profileCard(),
-             const SizedBox(height: 16),
-          Divider(color: Colors.grey.withOpacity(0.2)),
-          const SizedBox(height: 16),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: PatientActionTabs(controller: _tabController),
-          ),
-
-          const SizedBox(height: 16),
-          Divider(color: Colors.grey.withOpacity(0.2)),
-      
-
-          Expanded(
-            child: TabBarView(
-              controller: _tabController,
-              children: const [
-                VitalsTab(),
-                MedicalDashboard(),
-               MedicalDetailsPage()
-              ],
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: const Color(0xFF0B0F1A),
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          leading: const BackButton(color: Colors.blueAccent),
+          title: const Text("Back", style: TextStyle(color: Colors.blueAccent)),
+        ),
+        body: Column(
+          children: [
+            _profileCard(),
+            const SizedBox(height: 16),
+            Divider(color: Colors.grey.withOpacity(0.2)),
+            const SizedBox(height: 16),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: PatientActionTabs(controller: _tabController),
             ),
-          ),
-        ],
+      
+            const SizedBox(height: 16),
+            Divider(color: Colors.grey.withOpacity(0.2)),
+      
+            Expanded(
+              child: TabBarView(
+                controller: _tabController,
+                children: const [
+                  VitalsTab(),
+                  MedicalDashboard(),
+                  MedicalDetailsPage(),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -88,11 +89,11 @@ class _PatientProfileScreenState extends State<PatientProfileScreen>
         children: [
           Row(
             children: [
-              const Expanded(
+               Expanded(
                 child: Text(
                   "Mohammed Chowdhury",
                   style: TextStyle(
-                    color: Colors.white,
+                    color: Theme.of(context).textTheme.headlineMedium?.color ?? Colors.white  ,
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
@@ -107,11 +108,11 @@ class _PatientProfileScreenState extends State<PatientProfileScreen>
 
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: const [
-              Text("Blood Group: A+", style: TextStyle(color: Colors.white)),
+            children:  [
+              Text("Blood Group: A+", style: TextStyle(color:  Theme.of(context).textTheme.headlineMedium?.color ?? Colors.white  )),
               Text(
                 "Condition: Hypertension",
-                style: TextStyle(color: Colors.white),
+                style: TextStyle(color: Theme.of(context).textTheme.headlineMedium?.color ?? Colors.white  ),
               ),
             ],
           ),
@@ -124,7 +125,7 @@ class _PatientProfileScreenState extends State<PatientProfileScreen>
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
-        color: Colors.red.withOpacity(.2),
+        color:MedicalTheme.accentRed.withOpacity(0.1) ,
         borderRadius: BorderRadius.circular(20),
       ),
       child: const Text("CRITICAL", style: TextStyle(color: Colors.red)),
@@ -201,7 +202,11 @@ class VitalsTab extends StatelessWidget {
           children: [
             const Text(
               "Vital Signs History",
-              style: TextStyle(color: Colors.white, fontSize: 18),
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+              ),
             ),
             Icon(Icons.history, color: Colors.grey.withOpacity(0.5)),
           ],
