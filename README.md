@@ -2,15 +2,5 @@
 
 A new Flutter project.
 
-## Getting Started
+![Demo](https://github.com/md-ruhulamin/bask_flock_proximity_app/blob/9cd7b6278b5039f7c22d9c1d661d84bb9a8c1a34/bask_flock_proximity_app_ruhul%20amin.gif)
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
